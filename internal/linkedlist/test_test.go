@@ -7,307 +7,284 @@ import (
 
 func TestNewLinkedList1(t *testing.T) {
 	{
-		list := NewLinkedList1(nil)
-		testSingleListNode(t, list)
+		testSingleListNode(t, func(node *SingleListNode) SingleLinkedLister {
+			return NewLinkedList1(node)
+		})
 	}
 }
-func testSingleListNode(t *testing.T, list SingleLinkedLister) {
+type equalData struct {
+	HeadValue interface{}
+	HasHead bool
+	TailValue interface{}
+	HasTail bool
+	Length int
+	Dump string
+}
+func equalList(t *testing.T, list SingleLinkedLister, data equalData) {
+	// Dump
+	assert.Equal(t, data.Dump, list.Dump())
+	// head
 	{
 		head, hasHead := list.Head()
-		assert.Nil(t, head)
-		assert.Equal(t, hasHead, false)
+		assert.Equal(t, data.HasHead, hasHead)
+		if hasHead {
+			assert.Equal(t, data.HeadValue, head.Value())
+		} else {
+			assert.Equal(t, data.HeadValue, "")
+		}
 	}
+	// tail
 	{
 		tail, hasTail := list.Tail()
-		assert.Nil(t, tail)
-		assert.Equal(t, hasTail, false)
+		assert.Equal(t, data.HasTail, hasTail)
+		if hasTail {
+			assert.Equal(t, data.TailValue, tail.Value())
+		} else {
+			assert.Equal(t, data.TailValue, "")
+		}
 	}
+	// length
+	assert.Equal(t, data.Length, list.Length())
+}
+func testSingleListNode(t *testing.T, newList func(node *SingleListNode) SingleLinkedLister ) {
 	{
-		assert.Equal(t, list.Length(), 0)
+		list := newList(nil)
+		equalList(t, list, equalData{
+			HeadValue:    "",
+			HasHead: false,
+			TailValue:    "",
+			HasTail: false,
+			Length:  0,
+			Dump:    "",
+		})
 	}
+	// LeftPush
+	// a
+	// b->a
+	// c->b->a
 	{
-		assert.Equal(t, list.Dump(), "(EMPTY SINGLE LINKED LIST)")
+		list := newList(NewSingleListNode("a"))
+		equalList(t, list, equalData{
+			HeadValue:    "a",
+			HasHead: true,
+			TailValue:    "a",
+			HasTail: true,
+			Length:  1,
+			Dump:    "a",
+		})
+		list.LeftPush("b")
+		equalList(t, list, equalData{
+			Dump:    "b->a",
+			HeadValue:    "b",
+			HasHead: true,
+			TailValue:    "a",
+			HasTail: true,
+			Length:  2,
+		})
+		list.LeftPush("c")
+		equalList(t, list, equalData{
+			Dump:    "c->b->a",
+			HeadValue:    "c",
+			HasHead: true,
+			TailValue:    "a",
+			HasTail: true,
+			Length:  3,
+		})
 	}
-	// {
-	// 	list := newList()
-	// 	{
-	// 		head, hasHead := list.Head()
-	// 		assert.Equal(t, head, (*SingleListNode)(nil))
-	// 		assert.Equal(t, hasHead, false)
-	// 		tail, hasTail := list.Tail()
-	// 		assert.Equal(t, tail, (*SingleListNode)(nil))
-	// 		assert.Equal(t, hasTail, false)
-	// 		assert.Equal(t, list.Length(), uint(0))
-	// 		assert.Equal(t, list.Dump(), "(EMPTY SINGLE LINKED LIST)")
-	// 	}
-	// 	list.RightPush("a")
-	// 	{
-	// 		head, hasHead := list.Head()
-	// 		assert.Equal(t, head.value, "a")
-	// 		assert.Equal(t, hasHead, true)
-	// 		tail, hasTail := list.Tail()
-	// 		assert.Equal(t, tail.value, "a")
-	// 		assert.Equal(t, hasTail, true)
-	// 		assert.Equal(t, list.Length(), uint(1))
-	// 		assert.Equal(t, list.Dump(), "a")
-	// 	}
-	// 	list.RightPush("b")
-	// 	{
-	// 		head, hasHead := list.Head()
-	// 		assert.Equal(t, head.value, "a")
-	// 		assert.Equal(t, hasHead, true)
-	// 		tail, hasTail := list.Tail()
-	// 		assert.Equal(t, tail.value, "b")
-	// 		assert.Equal(t, hasTail, true)
-	// 		assert.Equal(t, list.Length(), uint(2))
-	// 		assert.Equal(t, list.Dump(), "a->b")
-	// 	}
-	// 	list.RightPush("c")
-	// 	{
-	// 		head, hasHead := list.Head()
-	// 		assert.Equal(t, head.value, "a")
-	// 		assert.Equal(t, hasHead, true)
-	// 		tail, hasTail := list.Tail()
-	// 		assert.Equal(t, tail.value, "c")
-	// 		assert.Equal(t, hasTail, true)
-	// 		assert.Equal(t, list.Length(), uint(3))
-	// 		assert.Equal(t, list.Dump(), "a->b->c")
-	// 	}
-	// 	list.RightPush("d")
-	// 	{
-	// 		head, hasHead := list.Head()
-	// 		assert.Equal(t, head.value, "a")
-	// 		assert.Equal(t, hasHead, true)
-	// 		tail, hasTail := list.Tail()
-	// 		assert.Equal(t, tail.value, "d")
-	// 		assert.Equal(t, hasTail, true)
-	// 		assert.Equal(t, list.Length(), uint(4))
-	// 		assert.Equal(t, list.Dump(), "a->b->c->d")
-	// 	}
-	// }
-	// // list.LeftPush() list.Head() list.Tail() list.Length()
-	// {
-	// 	list := newList()
-	// 	{
-	// 		head, hasHead := list.Head()
-	// 		assert.Equal(t, head, (*SingleListNode)(nil))
-	// 		assert.Equal(t, hasHead, false)
-	// 		tail, hasTail := list.Tail()
-	// 		assert.Equal(t, tail, (*SingleListNode)(nil))
-	// 		assert.Equal(t, hasTail, false)
-	// 		assert.Equal(t, list.Length(), uint(0))
-	// 		assert.Equal(t, list.Dump(), "(EMPTY SINGLE LINKED LIST)")
-	// 	}
-	// 	list.LeftPush("a")
-	// 	{
-	// 		head, hasHead := list.Head()
-	// 		assert.Equal(t, head.value, "a")
-	// 		assert.Equal(t, hasHead, true)
-	// 		tail, hasTail := list.Tail()
-	// 		assert.Equal(t, tail.value, "a")
-	// 		assert.Equal(t, hasTail, true)
-	// 		assert.Equal(t, list.Length(), uint(1))
-	// 		assert.Equal(t, list.Dump(), "a")
-	// 	}
-	// 	list.LeftPush("b")
-	// 	{
-	// 		head, hasHead := list.Head()
-	// 		assert.Equal(t, head.value, "b")
-	// 		assert.Equal(t, hasHead, true)
-	// 		tail, hasTail := list.Tail()
-	// 		assert.Equal(t, tail.value, "a")
-	// 		assert.Equal(t, hasTail, true)
-	// 		assert.Equal(t, list.Length(), uint(2))
-	// 		assert.Equal(t, list.Dump(), "b->a")
-	// 	}
-	// 	list.LeftPush("c")
-	// 	{
-	// 		head, hasHead := list.Head()
-	// 		assert.Equal(t, head.value, "c")
-	// 		assert.Equal(t, hasHead, true)
-	// 		tail, hasTail := list.Tail()
-	// 		assert.Equal(t, tail.value, "a")
-	// 		assert.Equal(t, hasTail, true)
-	// 		assert.Equal(t, list.Length(), uint(3))
-	// 		assert.Equal(t, list.Dump(), "c->b->a")
-	// 	}
-	// }
-	// // node.Next() node.Value()
-	// {
-	// 	{
-	// 		node := NewSingleListNode("a")
-	// 		nextNode, hasNext := node.Next()
-	// 		assert.Nil(t, nextNode)
-	// 		assert.Equal(t, hasNext, false)
-	// 		assert.Equal(t, node.value, node.Value())
-	// 		assert.Equal(t, node.value, "a")
-	// 	}
-	// 	{
-	// 		node := NewSingleListNode("a")
-	// 		node.next = NewSingleListNode("b")
-	// 		nextNode, hasNext := node.Next()
-	// 		assert.Equal(t, nextNode.Value(), "b")
-	// 		assert.Equal(t, hasNext, true)
-	// 		assert.Equal(t, node.value, node.Value())
-	// 		assert.Equal(t, node.value, "a")
-	// 	}
-	// }
-	// // // list.FindByIndex
-	// {
-	// 	list := newList()
-	// 	{
-	// 		node, hasNode := list.FindByIndex(0)
-	// 		assert.Equal(t, hasNode, false)
-	// 		assert.Equal(t, node, (*SingleListNode)(nil))
-	// 	}
-	// 	list.RightPush("a")
-	// 	{
-	// 		node, hasNode := list.FindByIndex(0)
-	// 		assert.Equal(t, hasNode, true)
-	// 		assert.Equal(t, node.Value(), "a")
-	// 	}
-	// 	{
-	// 		node, hasNode := list.FindByIndex(1)
-	// 		assert.Equal(t, hasNode, false)
-	// 		assert.Equal(t, node, (*SingleListNode)(nil))
-	// 	}
-	// 	list.RightPush("b")
-	// 	{
-	// 		node, hasNode := list.FindByIndex(0)
-	// 		assert.Equal(t, hasNode, true)
-	// 		assert.Equal(t, node.Value(), "a")
-	// 	}
-	// 	{
-	// 		node, hasNode := list.FindByIndex(1)
-	// 		assert.Equal(t, hasNode, true)
-	// 		assert.Equal(t, node.Value(), "b")
-	// 	}
-	// 	{
-	// 		node, hasNode := list.FindByIndex(2)
-	// 		assert.Equal(t, hasNode, false)
-	// 		assert.Equal(t, node, (*SingleListNode)(nil))
-	// 	}
-	// 	list.RightPush("c")
-	// 	{
-	// 		node, hasNode := list.FindByIndex(0)
-	// 		assert.Equal(t, hasNode, true)
-	// 		assert.Equal(t, node.Value(), "a")
-	// 	}
-	// 	{
-	// 		node, hasNode := list.FindByIndex(1)
-	// 		assert.Equal(t, hasNode, true)
-	// 		assert.Equal(t, node.Value(), "b")
-	// 	}
-	// 	{
-	// 		node, hasNode := list.FindByIndex(2)
-	// 		assert.Equal(t, hasNode, true)
-	// 		assert.Equal(t, node.Value(), "c")
-	// 	}
-	// 	{
-	// 		node, hasNode := list.FindByIndex(3)
-	// 		assert.Equal(t, hasNode, false)
-	// 		assert.Equal(t, node, (*SingleListNode)(nil))
-	// 	}
-	// }
-	// // // list.PrevNode
-	// {
-	// 	list := newList()
-	// 	{
-	// 		prevNode, hasPrevNode := list.PrevNode(NewSingleListNode("test length 0"))
-	// 		assert.Equal(t, hasPrevNode, false)
-	// 		assert.Equal(t, prevNode, (*SingleListNode)(nil))
-	// 	}
-	// 	list.RightPush("a")
-	// 	list.RightPush("b")
-	// 	list.RightPush("c")
-	// 	assert.Equal(t, list.Dump(), "a->b->c")
-	// 	head, hasHead := list.Head()
-	// 	assert.Equal(t, hasHead, true)
-	// 	{
-	// 		prevNode, hasPrevNode := list.PrevNode(head)
-	// 		assert.Equal(t, hasPrevNode, false)
-	// 		assert.Equal(t, prevNode, (*SingleListNode)(nil))
-	// 	}
-	// 	{
-	// 		prevNode, hasPrevNode := list.PrevNode(head.next)
-	// 		assert.Equal(t, hasPrevNode, true)
-	// 		assert.Equal(t, prevNode.value, "a")
-	// 	}
-	// 	{
-	// 		prevNode, hasPrevNode := list.PrevNode(head.next.next)
-	// 		assert.Equal(t, hasPrevNode, true)
-	// 		assert.Equal(t, prevNode.value, "b")
-	// 	}
-	// 	{
-	// 		prevNode, hasPrevNode := list.PrevNode(head.next.next.next)
-	// 		assert.Equal(t, hasPrevNode, false)
-	// 		assert.Equal(t, prevNode, (*SingleListNode)(nil))
-	// 	}
-	// 	{
-	// 		prevNode, hasPrevNode := list.PrevNode(NewSingleListNode("not exist"))
-	// 		assert.Equal(t, hasPrevNode, false)
-	// 		assert.Equal(t, prevNode, (*SingleListNode)(nil))
-	// 	}
-	// }
-	// // list.DeleteByNode()
-	// {
-	// 	// EMPTY
-	// 	{
-	// 		list := newList()
-	// 		assert.Equal(t, list.DeleteByNode(nil), false)
-	// 	}
-	// 	// HEAD_NODE ONE_NODE
-	// 	{
-	// 		list := newList()
-	// 		list.RightPush("a")
-	// 		node, hasNode := list.Head()
-	// 		assert.Equal(t, hasNode, true)
-	// 		assert.Equal(t, list.DeleteByNode(node), true)
-	// 		assert.Equal(t, list.Length(), uint(0))
-	// 	}
-	// 	// HEAD_NODE TWO_NODE
-	// 	{
-	// 		list := newList()
-	// 		list.RightPush("a")
-	// 		list.RightPush("b")
-	// 		node, hasNode := list.Head()
-	// 		assert.Equal(t, hasNode, true)
-	// 		assert.Equal(t, list.DeleteByNode(node), true)
-	// 		assert.Equal(t, list.Length(), uint(1))
-	// 		assert.Equal(t, list.Dump(), "b")
-	// 	}
-	// 	// HEAD_NODE THREE_NODE
-	// 	{
-	// 		list := newList()
-	// 		list.RightPush("a")
-	// 		list.RightPush("b")
-	// 		list.RightPush("c")
-	// 		node, hasNode := list.Head()
-	// 		assert.Equal(t, hasNode, true)
-	// 		assert.Equal(t, list.DeleteByNode(node), true)
-	// 		assert.Equal(t, list.Length(), uint(2))
-	// 		assert.Equal(t, list.Dump(), "b->c")
-	// 	}
-	// 	// TAIL_NODE ONE_NODE
-	// 	{
-	// 		list := newList()
-	// 		list.RightPush("a")
-	// 		node, hasNode := list.Tail()
-	// 		assert.Equal(t, hasNode, true)
-	// 		assert.Equal(t, list.DeleteByNode(node), true)
-	// 		assert.Equal(t, list.Length(), uint(0))
-	// 		assert.Equal(t, list.Dump(), "(EMPTY SINGLE LINKED LIST)")
-	// 	}
-	// 	// TAIL_NODE TWO_NODE
-	// 	{
-	// 		list := newList()
-	// 		list.RightPush("a")
-	// 		list.RightPush("b")
-	// 		node, hasNode := list.Tail()
-	// 		assert.Equal(t, hasNode, true)
-	// 		assert.Equal(t, list.DeleteByNode(node), true)
-	// 		assert.Equal(t, list.Length(), uint(1))
-	// 		assert.Equal(t, list.Dump(), "a")
-	// 	}
-	// }
+	// RightPush
+	// a
+	// a->b
+	// a->b->c
+	{
+		list := newList(NewSingleListNode("a"))
+		equalList(t, list, equalData{
+			HeadValue:    "a",
+			HasHead: true,
+			TailValue:    "a",
+			HasTail: true,
+			Length:  1,
+			Dump:    "a",
+		})
+		list.RightPush("b")
+		equalList(t, list, equalData{
+			Dump:    "a->b",
+			HeadValue:    "a",
+			HasHead: true,
+			TailValue:    "b",
+			HasTail: true,
+			Length:  2,
+		})
+		list.RightPush("c")
+		equalList(t, list, equalData{
+			Dump:    "a->b->c",
+			HeadValue:    "a",
+			HasHead: true,
+			TailValue:    "c",
+			HasTail: true,
+			Length:  3,
+		})
+	}
+	// PrevNode
+	{
+		list := newList(nil)
+		a := list.RightPush("a")
+		b := list.RightPush("b")
+		c := list.RightPush("c")
+		equalList(t, list, equalData{
+			Dump:    "a->b->c",
+			HeadValue:    "a",
+			HasHead: true,
+			TailValue:    "c",
+			HasTail: true,
+			Length:  3,
+		})
+		// head
+		{
+			prevNode, hasPrevNode := list.PrevNode(a)
+			assert.Nil(t, prevNode)
+			assert.Equal(t, hasPrevNode, false)
+		}
+		// middle
+		{
+			prevNode, hasPrevNode := list.PrevNode(b)
+			assert.Equal(t, a, prevNode)
+			assert.Equal(t, hasPrevNode, true)
+		}
+		// tail
+		{
+			prevNode, hasPrevNode := list.PrevNode(c)
+			assert.Equal(t, b, prevNode)
+			assert.Equal(t, hasPrevNode, true)
+		}
+		// not found node
+		{
+			prevNode, hasPrevNode := list.PrevNode(NewSingleListNode(""))
+			assert.Equal(t, hasPrevNode, false)
+			assert.Nil(t, prevNode)
+		}
+	}
+	// DeleteByNode
+	{
+		list := newList(nil)
+		a := list.RightPush("a")
+		b := list.RightPush("b")
+		c := list.RightPush("c")
+		equalList(t, list, equalData{
+			Dump:    "a->b->c",
+			HeadValue:    "a",
+			HasHead: true,
+			TailValue:    "c",
+			HasTail: true,
+			Length:  3,
+		})
+		// head
+		{
+			assert.Equal(t, list.DeleteByNode(a), true)
+			equalList(t, list, equalData{
+				Dump:    "b->c",
+				HeadValue:    "b",
+				HasHead: true,
+				TailValue:    "c",
+				HasTail: true,
+				Length:  2,
+			})
+			assert.Equal(t, list.DeleteByNode(a), false)
+		}
+		// tail
+		{
+			assert.Equal(t, list.DeleteByNode(c), true)
+			equalList(t, list, equalData{
+				Dump:    "b",
+				HeadValue:    "b",
+				HasHead: true,
+				TailValue:    "b",
+				HasTail: true,
+				Length:  1,
+			})
+		}
+		// one node
+		{
+			assert.Equal(t, list.DeleteByNode(b), true)
+			equalList(t, list, equalData{
+				Dump:    "",
+				HeadValue:    "",
+				HasHead: false,
+				TailValue:    "",
+				HasTail: false,
+				Length:  0,
+			})
+		}
+		// middle
+		{
+			_ = list.RightPush("x")
+			y := list.RightPush("y")
+			_ = list.RightPush("z")
+			equalList(t, list, equalData{
+				Dump:    "x->y->z",
+				HeadValue:    "x",
+				HasHead: true,
+				TailValue:    "z",
+				HasTail: true,
+				Length:  3,
+			})
+			assert.Equal(t, list.DeleteByNode(y), true)
+			equalList(t, list, equalData{
+				Dump:    "x->z",
+				HeadValue:    "x",
+				HasHead: true,
+				TailValue:    "z",
+				HasTail: true,
+				Length:  2,
+			})
+		}
+	}
+	// InsertBefore
+	{
+		list := newList(nil)
+		a := list.RightPush("a")
+		// head
+		b := NewSingleListNode("b")
+		assert.Equal(t, list.InsertBefore(a, b), true)
+		equalList(t, list, equalData{
+			Dump:    "b->a",
+			HeadValue:    "b",
+			HasHead: true,
+			TailValue:    "a",
+			HasTail: true,
+			Length:  2,
+		})
+		c := NewSingleListNode("c")
+		assert.Equal(t, list.InsertBefore(b, c), true)
+		equalList(t, list, equalData{
+			Dump:    "c->b->a",
+			HeadValue:    "c",
+			HasHead: true,
+			TailValue:    "a",
+			HasTail: true,
+			Length:  3,
+		})
+		// middle
+		x := NewSingleListNode("x")
+		assert.Equal(t, list.InsertBefore(b, x), true)
+		equalList(t, list, equalData{
+			Dump:    "c->x->b->a",
+			HeadValue:    "c",
+			HasHead: true,
+			TailValue:    "a",
+			HasTail: true,
+			Length:  4,
+		})
+		// tail
+		z := NewSingleListNode("z")
+		assert.Equal(t, list.InsertBefore(a, z), true)
+		equalList(t, list, equalData{
+			Dump:    "c->x->b->z->a",
+			HeadValue:    "c",
+			HasHead: true,
+			TailValue:    "a",
+			HasTail: true,
+			Length:  5,
+		})
+
+	}
 }
