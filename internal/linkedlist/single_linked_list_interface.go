@@ -40,4 +40,6 @@ type SingleLinkedLister interface {
 	InsertAfter(pivot *SingleListNode, newNode *SingleListNode) (ok bool)
 	// 根据 index 查询节点
 	FindByIndex(index int) (target *SingleListNode, hasNode bool)
+	// 反转链表
+	Reverse()
 }

@@ -376,4 +376,39 @@ func testSingleListNode(t *testing.T, newList func(node *SingleListNode) SingleL
 			assert.Equal(t,hasNode, false)
 		}
 	}
+	// Reverse
+	{
+		list := newList(nil)
+		list.Reverse()
+		assert.Equal(t, list.Dump(), "")
+	}
+	{
+		list := newList(nil)
+		list.RightPush("a")
+		list.Reverse()
+		assert.Equal(t, list.Dump(), "a")
+	}
+	{
+		list := newList(nil)
+		list.RightPush("a")
+		list.RightPush("b")
+		assert.Equal(t, list.Dump(), "a->b")
+	}
+	{
+		list := newList(nil)
+		list.RightPush("a")
+		list.RightPush("b")
+		list.RightPush("c")
+		list.Reverse()
+		assert.Equal(t, list.Dump(), "c->b->a")
+	}
+	{
+		list := newList(nil)
+		list.RightPush("a")
+		list.RightPush("b")
+		list.RightPush("c")
+		list.RightPush("d")
+		list.Reverse()
+		assert.Equal(t, list.Dump(), "d->c->b->a")
+	}
 }
