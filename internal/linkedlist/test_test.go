@@ -285,6 +285,95 @@ func testSingleListNode(t *testing.T, newList func(node *SingleListNode) SingleL
 			HasTail: true,
 			Length:  5,
 		})
-
+	}
+	// InsertBefore
+	{
+		list := newList(nil)
+		a := list.RightPush("a")
+		b := NewSingleListNode("b")
+		// head
+		assert.Equal(t, list.InsertAfter(a, b), true)
+		equalList(t, list, equalData{
+			Dump:    "a->b",
+			HeadValue:    "a",
+			HasHead: true,
+			TailValue:    "b",
+			HasTail: true,
+			Length:  2,
+		})
+		assert.Equal(t, list.InsertAfter(NewSingleListNode("1"), NewSingleListNode("2")), false)
+		// tail
+		c := NewSingleListNode("c")
+		assert.Equal(t, list.InsertAfter(b, c), true)
+		equalList(t, list, equalData{
+			Dump:    "a->b->c",
+			HeadValue:    "a",
+			HasHead: true,
+			TailValue:    "c",
+			HasTail: true,
+			Length:  3,
+		})
+		// middle
+		x := NewSingleListNode("x")
+		assert.Equal(t, list.InsertAfter(b, x), true)
+		equalList(t, list, equalData{
+			Dump:    "a->b->x->c",
+			HeadValue:    "a",
+			HasHead: true,
+			TailValue:    "c",
+			HasTail: true,
+			Length:  4,
+		})
+	}
+	// FindByIndex
+	{
+		list := newList(nil)
+		// empty
+		{
+			node, hasNode := list.FindByIndex(0)
+			assert.Nil(t, node)
+			assert.Equal(t,hasNode, false)
+		}
+		// one node
+		a := list.RightPush("a")
+		{
+			node, hasNode := list.FindByIndex(0)
+			assert.Equal(t, node, a)
+			assert.Equal(t,hasNode, true)
+		}
+		// two node
+		b := list.RightPush("b")
+		{
+			node, hasNode := list.FindByIndex(0)
+			assert.Equal(t, node, a)
+			assert.Equal(t,hasNode, true)
+		}
+		{
+			node, hasNode := list.FindByIndex(1)
+			assert.Equal(t, node, b)
+			assert.Equal(t,hasNode, true)
+		}
+		// three node
+		c := list.RightPush("c")
+		{
+			node, hasNode := list.FindByIndex(0)
+			assert.Equal(t, node, a)
+			assert.Equal(t,hasNode, true)
+		}
+		{
+			node, hasNode := list.FindByIndex(1)
+			assert.Equal(t, node, b)
+			assert.Equal(t,hasNode, true)
+		}
+		{
+			node, hasNode := list.FindByIndex(2)
+			assert.Equal(t, node, c)
+			assert.Equal(t,hasNode, true)
+		}
+		{
+			node, hasNode := list.FindByIndex(3)
+			assert.Nil(t, node)
+			assert.Equal(t,hasNode, false)
+		}
 	}
 }
