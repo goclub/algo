@@ -13,11 +13,17 @@ type SingleListNode struct {
 func (node *SingleListNode) Next() (nextNode *SingleListNode, hasNext bool) {
 	return node.next,  node.next != nil
 }
+func (node *SingleListNode) SetNext(nextNode *SingleListNode) {
+	node.next = nextNode
+}
 func (node *SingleListNode) Value() interface{} {
 	return node.value
 }
+func (node *SingleListNode) SetValue(v interface{})  {
+	node.value = v
+}
 
-type SingleLinkedLister interface {
+type SingleLister interface {
 	// 获取头节点
 	Head() (head *SingleListNode, hasHead bool)
 	// 获取尾节点
@@ -42,4 +48,6 @@ type SingleLinkedLister interface {
 	FindByIndex(index int) (target *SingleListNode, hasNode bool)
 	// 反转链表
 	Reverse()
+	// 检查列表中是否有环
+	IsCycle() bool
 }

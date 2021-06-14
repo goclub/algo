@@ -2,24 +2,25 @@ package nimoc_algo_geeekbang_linkedlist
 
 import (
 	"fmt"
+	"strconv"
 )
 
-type LinkedList1 struct {
+type SingleList1 struct {
 	head *SingleListNode
 }
-func NewLinkedList1(head *SingleListNode) *LinkedList1 {
-	return &LinkedList1{
+func NewSingleList1(head *SingleListNode) *SingleList1 {
+	return &SingleList1{
 		head: head,
 	}
 }
 
-func (list *LinkedList1) Head() (head *SingleListNode, hasHead bool) {
+func (list *SingleList1) Head() (head *SingleListNode, hasHead bool) {
 	if list.head == nil {
 		return nil, false
 	}
 	return list.head, true
 }
-func (list *LinkedList1) Tail() (tail *SingleListNode, hasTail bool) {
+func (list *SingleList1) Tail() (tail *SingleListNode, hasTail bool) {
 	if list.head == nil {
 		return nil, false
 	}
@@ -31,7 +32,7 @@ func (list *LinkedList1) Tail() (tail *SingleListNode, hasTail bool) {
 		node = node.next
 	}
 }
-func (list *LinkedList1) Length() (length int) {
+func (list *SingleList1) Length() (length int) {
 	if list.head == nil {
 		return 0
 	}
@@ -44,21 +45,29 @@ func (list *LinkedList1) Length() (length int) {
 		node = node.next
 	}
 }
-func (list *LinkedList1) Dump() (s string) {
+func (list *SingleList1) Dump() (s string) {
 	if list.head == nil {
 		return ""
 	}
-	node := list.head
+	curr := list.head
+	seen := map[*SingleListNode]int{}
+	i := 0
 	for {
-		s += fmt.Sprintf("%s", node.value)
-		if node.next == nil{
+		if index, ok := seen[curr]; ok {
+			s = s + fmt.Sprintf("cycle{index:"+strconv.Itoa(index) + ", value:%s}", curr.value)
+			return
+		}
+		s += fmt.Sprintf("%s", curr.value)
+		if curr.next == nil{
 			return
 		}
 		s += "->"
-		node = node.next
+		seen[curr] = i
+		i++
+		curr = curr.next
 	}
 }
-func (list *LinkedList1) LeftPush(v interface{}) (newNode *SingleListNode) {
+func (list *SingleList1) LeftPush(v interface{}) (newNode *SingleListNode) {
 	newNode = NewSingleListNode(v)
 	if list.head == nil {
 		list.head = newNode
@@ -69,7 +78,7 @@ func (list *LinkedList1) LeftPush(v interface{}) (newNode *SingleListNode) {
 	return
 }
 
-func (list *LinkedList1) RightPush(v interface{}) (newNode *SingleListNode) {
+func (list *SingleList1) RightPush(v interface{}) (newNode *SingleListNode) {
 	newNode = NewSingleListNode(v)
 	if list.head == nil {
 		list.head = newNode
@@ -84,7 +93,7 @@ func (list *LinkedList1) RightPush(v interface{}) (newNode *SingleListNode) {
 		node = node.next
 	}
 }
-func (list *LinkedList1) PrevNode(pivot *SingleListNode) (prevNode *SingleListNode, hasPrevNode bool) {
+func (list *SingleList1) PrevNode(pivot *SingleListNode) (prevNode *SingleListNode, hasPrevNode bool) {
 	if list.head == nil {
 		return nil, false
 	}
@@ -100,7 +109,7 @@ func (list *LinkedList1) PrevNode(pivot *SingleListNode) (prevNode *SingleListNo
 	}
 }
 
-func (list *LinkedList1) DeleteByNode(removeNode *SingleListNode) (ok bool) {
+func (list *SingleList1) DeleteByNode(removeNode *SingleListNode) (ok bool) {
 	if list.head == nil {
 		return false
 	}
@@ -123,7 +132,7 @@ func (list *LinkedList1) DeleteByNode(removeNode *SingleListNode) (ok bool) {
 		node = node.next
 	}
 }
-func (list *LinkedList1) InsertBefore(pivot *SingleListNode, newNode *SingleListNode) (ok bool) {
+func (list *SingleList1) InsertBefore(pivot *SingleListNode, newNode *SingleListNode) (ok bool) {
 	if list.head == nil {
 		return false
 	}
@@ -145,7 +154,7 @@ func (list *LinkedList1) InsertBefore(pivot *SingleListNode, newNode *SingleList
 		node = node.next
 	}
 }
-func (list *LinkedList1) InsertAfter(pivot *SingleListNode, newNode *SingleListNode) (ok bool) {
+func (list *SingleList1) InsertAfter(pivot *SingleListNode, newNode *SingleListNode) (ok bool) {
 	if list.head == nil {
 		return false
 	}
@@ -162,7 +171,7 @@ func (list *LinkedList1) InsertAfter(pivot *SingleListNode, newNode *SingleListN
 		node = node.next
 	}
 }
-func (list *LinkedList1) FindByIndex(index int) (target *SingleListNode, hasNode bool) {
+func (list *SingleList1) FindByIndex(index int) (target *SingleListNode, hasNode bool) {
 	if list.head == nil {
 		return nil, false
 	}
@@ -177,32 +186,48 @@ func (list *LinkedList1) FindByIndex(index int) (target *SingleListNode, hasNode
 		node = node.next
 	}
 }
-func (list *LinkedList1) Reverse() {
+func (list *SingleList1) Reverse() {
 	// empty
 	if list.head == nil {
 		return
 	}
-	// one node
+	// one node 
 	if list.head.next == nil {
 		return
 	}
-	// eg: a->b->c->d->e
 	var prev *SingleListNode
-	for curr := list.head; curr != nil;{
-		// I: curr is a
-		// 	  prev is nil
-		//    next is b
-
-		// II: curr is b
-		// 	  prev is a
-		//    next is c
+	curr := list.head
+	for {
 		next := curr.next
-		// I: nil<-a b->c->d->e
-
-		// II: nil<-a<-b c->d->e
 		curr.next = prev
+		if next == nil {
+			list.head = curr
+			return
+		}
 		prev = curr
 		curr = next
 	}
-	list.head = prev
+}
+
+func (list *SingleList1) IsCycle() bool {
+	if list.head == nil {
+		return false
+	}
+	if list.head.next == nil {
+		return false
+	}
+	slow , fast := list.head, list.head.next
+	for {
+		if fast == slow {
+			return true
+		}
+		if fast == nil {
+			return false
+		}
+		if fast.next == nil {
+			return false
+		}
+		slow = slow.next
+		fast = fast.next.next
+	}
 }

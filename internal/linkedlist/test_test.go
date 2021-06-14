@@ -5,10 +5,10 @@ import (
 	"testing"
 )
 
-func TestNewLinkedList1(t *testing.T) {
+func TestNewSingleList1(t *testing.T) {
 	{
-		testSingleListNode(t, func(node *SingleListNode) SingleLinkedLister {
-			return NewLinkedList1(node)
+		testSingleListNode(t, func(node *SingleListNode) SingleLister {
+			return NewSingleList1(node)
 		})
 	}
 }
@@ -20,7 +20,7 @@ type equalData struct {
 	Length int
 	Dump string
 }
-func equalList(t *testing.T, list SingleLinkedLister, data equalData) {
+func equalList(t *testing.T, list SingleLister, data equalData) {
 	// Dump
 	assert.Equal(t, data.Dump, list.Dump())
 	// head
@@ -30,7 +30,7 @@ func equalList(t *testing.T, list SingleLinkedLister, data equalData) {
 		if hasHead {
 			assert.Equal(t, data.HeadValue, head.Value())
 		} else {
-			assert.Equal(t, data.HeadValue, "")
+			assert.Equal(t, data.HeadValue, nil)
 		}
 	}
 	// tail
@@ -40,19 +40,19 @@ func equalList(t *testing.T, list SingleLinkedLister, data equalData) {
 		if hasTail {
 			assert.Equal(t, data.TailValue, tail.Value())
 		} else {
-			assert.Equal(t, data.TailValue, "")
+			assert.Equal(t, data.TailValue, nil)
 		}
 	}
 	// length
 	assert.Equal(t, data.Length, list.Length())
 }
-func testSingleListNode(t *testing.T, newList func(node *SingleListNode) SingleLinkedLister ) {
+func testSingleListNode(t *testing.T, newList func(node *SingleListNode) SingleLister ) {
 	{
 		list := newList(nil)
 		equalList(t, list, equalData{
-			HeadValue:    "",
+			HeadValue:    nil,
 			HasHead: false,
-			TailValue:    "",
+			TailValue:    nil,
 			HasTail: false,
 			Length:  0,
 			Dump:    "",
@@ -63,7 +63,8 @@ func testSingleListNode(t *testing.T, newList func(node *SingleListNode) SingleL
 	// b->a
 	// c->b->a
 	{
-		list := newList(NewSingleListNode("a"))
+		list := newList(nil)
+		list.LeftPush("a")
 		equalList(t, list, equalData{
 			HeadValue:    "a",
 			HasHead: true,
@@ -125,6 +126,11 @@ func testSingleListNode(t *testing.T, newList func(node *SingleListNode) SingleL
 		})
 	}
 	// PrevNode
+	// a->b->c
+	// PrevNode(a) return nil, false
+	// PrevNode(b) return a, true
+	// PrevNode(c) return b, true
+	// PrevNode(x) return nil, false
 	{
 		list := newList(nil)
 		a := list.RightPush("a")
@@ -165,6 +171,11 @@ func testSingleListNode(t *testing.T, newList func(node *SingleListNode) SingleL
 	}
 	// DeleteByNode
 	{
+		// a->b->c
+		// delete a, list is b->c
+		// delete a, return false
+		// delete c, list is b
+		// delete b, list is
 		list := newList(nil)
 		a := list.RightPush("a")
 		b := list.RightPush("b")
@@ -207,14 +218,16 @@ func testSingleListNode(t *testing.T, newList func(node *SingleListNode) SingleL
 			assert.Equal(t, list.DeleteByNode(b), true)
 			equalList(t, list, equalData{
 				Dump:    "",
-				HeadValue:    "",
+				HeadValue:    nil,
 				HasHead: false,
-				TailValue:    "",
+				TailValue:    nil,
 				HasTail: false,
 				Length:  0,
 			})
 		}
 		// middle
+		// x->y->z
+		// delete y, list is x->z
 		{
 			_ = list.RightPush("x")
 			y := list.RightPush("y")
@@ -392,7 +405,8 @@ func testSingleListNode(t *testing.T, newList func(node *SingleListNode) SingleL
 		list := newList(nil)
 		list.RightPush("a")
 		list.RightPush("b")
-		assert.Equal(t, list.Dump(), "a->b")
+		list.Reverse()
+		assert.Equal(t, list.Dump(), "b->a")
 	}
 	{
 		list := newList(nil)
@@ -411,4 +425,16 @@ func testSingleListNode(t *testing.T, newList func(node *SingleListNode) SingleL
 		list.Reverse()
 		assert.Equal(t, list.Dump(), "d->c->b->a")
 	}
+	// cycle
+	list := newList(nil)
+	a := list.RightPush("a");_=a
+	b := list.RightPush("b");_=b
+	c := list.RightPush("c")
+	d := list.RightPush("d");_=d
+	assert.Equal(t, list.IsCycle(), false)
+	e := list.RightPush("e")
+	e.SetNext(c)
+	assert.Equal(t, list.Dump(), "a->b->c->d->e->cycle{index:2, value:c}")
+	assert.Equal(t, list.IsCycle(), true)
 }
+

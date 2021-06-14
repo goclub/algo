@@ -2,7 +2,7 @@
 
 ## 单链表
 
-[单链表 SingleLinkedLister 接口设计|embed](single_linked_list_interface.go)
+[单链表 SingleLister 接口设计|embed](single_linked_list_interface.go)
 
 处理链表边界条件要点：
 
