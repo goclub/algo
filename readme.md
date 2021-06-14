@@ -6,7 +6,7 @@
 
 > 数据结构与算法之美
 
-[![数据结构与算法之美](./internal/media/geek_share.png)](http://gk.link/a/10pd2)
+[![数据结构与算法之美](./internal/media/geek_share.png)](http://gk.link/a/10pd2))
 
 ## 练习与参考
 

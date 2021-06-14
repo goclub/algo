@@ -41,13 +41,7 @@ func equalList(t *testing.T, list SingleLister, data equalData) {
 	assert.Equal(t, data.Length, list.Length())
 }
 
-func TestNewSingleListPractice(t *testing.T) {
-	suite.Run(t, &TestSingleListSuite{
-		NewList: func(node *SingleListNode) SingleLister {
-			return NewSingleListPractice(node)
-		},
-	})
-}
+
 
 type TestSingleListSuite struct {
 	suite.Suite
