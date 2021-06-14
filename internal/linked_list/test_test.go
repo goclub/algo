@@ -1,4 +1,4 @@
-package nimoc_algo_geeekbang_linkedlist
+package goclub_algo_linked_list
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -40,17 +40,11 @@ func equalList(t *testing.T, list SingleLister, data equalData) {
 	// length
 	assert.Equal(t, data.Length, list.Length())
 }
-func TestNewSingleList1(t *testing.T) {
+
+func TestNewSingleListPractice(t *testing.T) {
 	suite.Run(t, &TestSingleListSuite{
 		NewList: func(node *SingleListNode) SingleLister {
-			return NewSingleList1(node)
-		},
-	})
-}
-func TestNewSingleList2(t *testing.T) {
-	suite.Run(t, &TestSingleListSuite{
-		NewList: func(node *SingleListNode) SingleLister {
-			return NewSingleList2(node)
+			return NewSingleListPractice(node)
 		},
 	})
 }

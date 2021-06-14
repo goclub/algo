@@ -1,4 +1,4 @@
-package nimoc_algo_geeekbang_linkedlist
+package goclub_algo_linked_list
 
 func NewSingleListNode (v interface{}) *SingleListNode {
 	return &SingleListNode{

@@ -1,26 +1,26 @@
-package nimoc_algo_geeekbang_linkedlist
+package goclub_algo_linked_list
 
 import (
 	"fmt"
 	"strconv"
 )
-
-type SingleList1 struct {
+// 最容易实现的单链表
+type SingleListEasy struct {
 	head *SingleListNode
 }
-func NewSingleList1(head *SingleListNode) *SingleList1 {
-	return &SingleList1{
+func NewSingleListEasy(head *SingleListNode) *SingleListEasy {
+	return &SingleListEasy{
 		head: head,
 	}
 }
 
-func (list *SingleList1) Head() (head *SingleListNode, hasHead bool) {
+func (list *SingleListEasy) Head() (head *SingleListNode, hasHead bool) {
 	if list.head == nil {
 		return nil, false
 	}
 	return list.head, true
 }
-func (list *SingleList1) Tail() (tail *SingleListNode, hasTail bool) {
+func (list *SingleListEasy) Tail() (tail *SingleListNode, hasTail bool) {
 	if list.head == nil {
 		return nil, false
 	}
@@ -32,7 +32,7 @@ func (list *SingleList1) Tail() (tail *SingleListNode, hasTail bool) {
 		node = node.next
 	}
 }
-func (list *SingleList1) Length() (length int) {
+func (list *SingleListEasy) Length() (length int) {
 	if list.head == nil {
 		return 0
 	}
@@ -45,7 +45,7 @@ func (list *SingleList1) Length() (length int) {
 		node = node.next
 	}
 }
-func (list *SingleList1) Dump() (s string) {
+func (list *SingleListEasy) Dump() (s string) {
 	if list.head == nil {
 		return ""
 	}
@@ -67,7 +67,7 @@ func (list *SingleList1) Dump() (s string) {
 		curr = curr.next
 	}
 }
-func (list *SingleList1) LeftPush(v interface{}) (newNode *SingleListNode) {
+func (list *SingleListEasy) LeftPush(v interface{}) (newNode *SingleListNode) {
 	newNode = NewSingleListNode(v)
 	if list.head == nil {
 		list.head = newNode
@@ -78,7 +78,7 @@ func (list *SingleList1) LeftPush(v interface{}) (newNode *SingleListNode) {
 	return
 }
 
-func (list *SingleList1) RightPush(v interface{}) (newNode *SingleListNode) {
+func (list *SingleListEasy) RightPush(v interface{}) (newNode *SingleListNode) {
 	newNode = NewSingleListNode(v)
 	if list.head == nil {
 		list.head = newNode
@@ -93,7 +93,7 @@ func (list *SingleList1) RightPush(v interface{}) (newNode *SingleListNode) {
 		node = node.next
 	}
 }
-func (list *SingleList1) PrevNode(pivot *SingleListNode) (prevNode *SingleListNode, hasPrevNode bool) {
+func (list *SingleListEasy) PrevNode(pivot *SingleListNode) (prevNode *SingleListNode, hasPrevNode bool) {
 	if list.head == nil {
 		return nil, false
 	}
@@ -109,7 +109,7 @@ func (list *SingleList1) PrevNode(pivot *SingleListNode) (prevNode *SingleListNo
 	}
 }
 
-func (list *SingleList1) DeleteByNode(removeNode *SingleListNode) (ok bool) {
+func (list *SingleListEasy) DeleteByNode(removeNode *SingleListNode) (ok bool) {
 	if list.head == nil {
 		return false
 	}
@@ -132,7 +132,7 @@ func (list *SingleList1) DeleteByNode(removeNode *SingleListNode) (ok bool) {
 		node = node.next
 	}
 }
-func (list *SingleList1) InsertBefore(pivot *SingleListNode, newNode *SingleListNode) (ok bool) {
+func (list *SingleListEasy) InsertBefore(pivot *SingleListNode, newNode *SingleListNode) (ok bool) {
 	if list.head == nil {
 		return false
 	}
@@ -154,7 +154,7 @@ func (list *SingleList1) InsertBefore(pivot *SingleListNode, newNode *SingleList
 		node = node.next
 	}
 }
-func (list *SingleList1) InsertAfter(pivot *SingleListNode, newNode *SingleListNode) (ok bool) {
+func (list *SingleListEasy) InsertAfter(pivot *SingleListNode, newNode *SingleListNode) (ok bool) {
 	if list.head == nil {
 		return false
 	}
@@ -171,7 +171,7 @@ func (list *SingleList1) InsertAfter(pivot *SingleListNode, newNode *SingleListN
 		node = node.next
 	}
 }
-func (list *SingleList1) FindByIndex(index int) (target *SingleListNode, hasNode bool) {
+func (list *SingleListEasy) FindByIndex(index int) (target *SingleListNode, hasNode bool) {
 	if list.head == nil {
 		return nil, false
 	}
@@ -186,7 +186,7 @@ func (list *SingleList1) FindByIndex(index int) (target *SingleListNode, hasNode
 		node = node.next
 	}
 }
-func (list *SingleList1) Reverse() {
+func (list *SingleListEasy) Reverse() {
 	// empty
 	if list.head == nil {
 		return
@@ -209,7 +209,7 @@ func (list *SingleList1) Reverse() {
 	}
 }
 
-func (list *SingleList1) IsCycle() bool {
+func (list *SingleListEasy) IsCycle() bool {
 	if list.head == nil {
 		return false
 	}
