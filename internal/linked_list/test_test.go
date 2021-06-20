@@ -7,38 +7,38 @@ import (
 )
 
 type equalData struct {
-	HeadValue interface{}
-	HasHead bool
-	TailValue interface{}
-	HasTail bool
-	Length int
+	FirstValue interface{}
+	HasFirst bool
+	LastValue interface{}
+	HasLast bool
+	Size int
 	Dump string
 }
 func equalList(t *testing.T, list SingleLister, data equalData) {
 	// Dump
 	assert.Equal(t, data.Dump, list.Dump())
-	// head
+	// first
 	{
-		head, hasHead := list.Head()
-		assert.Equal(t, data.HasHead, hasHead)
-		if hasHead {
-			assert.Equal(t, data.HeadValue, head.Value())
+		first, hasFirst := list.First()
+		assert.Equal(t, data.HasFirst, hasFirst)
+		if hasFirst {
+			assert.Equal(t, data.FirstValue, first.Value())
 		} else {
-			assert.Equal(t, data.HeadValue, nil)
+			assert.Equal(t, data.FirstValue, nil)
 		}
 	}
-	// tail
+	// last
 	{
-		tail, hasTail := list.Tail()
-		assert.Equal(t, data.HasTail, hasTail)
-		if hasTail {
-			assert.Equal(t, data.TailValue, tail.Value())
+		last, hasLast := list.Last()
+		assert.Equal(t, data.HasLast, hasLast)
+		if hasLast {
+			assert.Equal(t, data.LastValue, last.Value())
 		} else {
-			assert.Equal(t, data.TailValue, nil)
+			assert.Equal(t, data.LastValue, nil)
 		}
 	}
 	// length
-	assert.Equal(t, data.Length, list.Length())
+	assert.Equal(t, data.Size, list.Size())
 }
 
 
@@ -54,96 +54,96 @@ func (suite TestSingleListSuite) TestEmptyList() {
 	{
 		list := newList(nil)
 		equalList(t, list, equalData{
-			HeadValue:    nil,
-			HasHead: false,
-			TailValue:    nil,
-			HasTail: false,
-			Length:  0,
+			FirstValue:    nil,
+			HasFirst: false,
+			LastValue:    nil,
+			HasLast: false,
+			Size:  0,
 			Dump:    "",
 		})
 	}
 }
 
-func (suite TestSingleListSuite) TestLeftPush() {
+func (suite TestSingleListSuite) TestAddFirst() {
 	t := suite.T()
 	newList := suite.NewList
 	{
 		list := newList(NewSingleListNode("a"))
 		equalList(t, list, equalData{
-			HeadValue:    "a",
-			HasHead: true,
-			TailValue:    "a",
-			HasTail: true,
-			Length:  1,
+			FirstValue:    "a",
+			HasFirst: true,
+			LastValue:    "a",
+			HasLast: true,
+			Size:  1,
 			Dump:    "a",
 		})
-		list.LeftPush("b")
+		list.AddFirst("b")
 		equalList(t, list, equalData{
 			Dump:    "b->a",
-			HeadValue:    "b",
-			HasHead: true,
-			TailValue:    "a",
-			HasTail: true,
-			Length:  2,
+			FirstValue:    "b",
+			HasFirst: true,
+			LastValue:    "a",
+			HasLast: true,
+			Size:  2,
 		})
-		list.LeftPush("c")
+		list.AddFirst("c")
 		equalList(t, list, equalData{
 			Dump:    "c->b->a",
-			HeadValue:    "c",
-			HasHead: true,
-			TailValue:    "a",
-			HasTail: true,
-			Length:  3,
+			FirstValue:    "c",
+			HasFirst: true,
+			LastValue:    "a",
+			HasLast: true,
+			Size:  3,
 		})
 	}
 }
-func (suite TestSingleListSuite) TestRightPush() {
+func (suite TestSingleListSuite) TestAddLast() {
 	t := suite.T()
 	newList := suite.NewList
 	list := newList(NewSingleListNode("a"))
 	equalList(t, list, equalData{
-		HeadValue:    "a",
-		HasHead: true,
-		TailValue:    "a",
-		HasTail: true,
-		Length:  1,
+		FirstValue:    "a",
+		HasFirst: true,
+		LastValue:    "a",
+		HasLast: true,
+		Size:  1,
 		Dump:    "a",
 	})
-	list.RightPush("b")
+	list.AddLast("b")
 	equalList(t, list, equalData{
 		Dump:    "a->b",
-		HeadValue:    "a",
-		HasHead: true,
-		TailValue:    "b",
-		HasTail: true,
-		Length:  2,
+		FirstValue:    "a",
+		HasFirst: true,
+		LastValue:    "b",
+		HasLast: true,
+		Size:  2,
 	})
-	list.RightPush("c")
+	list.AddLast("c")
 	equalList(t, list, equalData{
 		Dump:    "a->b->c",
-		HeadValue:    "a",
-		HasHead: true,
-		TailValue:    "c",
-		HasTail: true,
-		Length:  3,
+		FirstValue:    "a",
+		HasFirst: true,
+		LastValue:    "c",
+		HasLast: true,
+		Size:  3,
 	})
 }
 func (suite TestSingleListSuite) TestPrevNode() {
 	t := suite.T()
 	newList := suite.NewList
 	list := newList(nil)
-	a := list.RightPush("a")
-	b := list.RightPush("b")
-	c := list.RightPush("c")
+	a := list.AddLast("a")
+	b := list.AddLast("b")
+	c := list.AddLast("c")
 	equalList(t, list, equalData{
 		Dump:    "a->b->c",
-		HeadValue:    "a",
-		HasHead: true,
-		TailValue:    "c",
-		HasTail: true,
-		Length:  3,
+		FirstValue:    "a",
+		HasFirst: true,
+		LastValue:    "c",
+		HasLast: true,
+		Size:  3,
 	})
-	// head
+	// first
 	{
 		prevNode, hasPrevNode := list.PrevNode(a)
 		assert.Nil(t, prevNode)
@@ -155,7 +155,7 @@ func (suite TestSingleListSuite) TestPrevNode() {
 		assert.Equal(t, a, prevNode)
 		assert.Equal(t, hasPrevNode, true)
 	}
-	// tail
+	// last
 	{
 		prevNode, hasPrevNode := list.PrevNode(c)
 		assert.Equal(t, b, prevNode)
@@ -169,81 +169,81 @@ func (suite TestSingleListSuite) TestPrevNode() {
 	}
 }
 
-func (suite TestSingleListSuite) TestDeleteByNode() {
+func (suite TestSingleListSuite) TestRemoveByNode() {
 	t := suite.T()
 	newList := suite.NewList
 	list := newList(nil)
-	a := list.RightPush("a")
-	b := list.RightPush("b")
-	c := list.RightPush("c")
+	a := list.AddLast("a")
+	b := list.AddLast("b")
+	c := list.AddLast("c")
 	equalList(t, list, equalData{
 		Dump:    "a->b->c",
-		HeadValue:    "a",
-		HasHead: true,
-		TailValue:    "c",
-		HasTail: true,
-		Length:  3,
+		FirstValue:    "a",
+		HasFirst: true,
+		LastValue:    "c",
+		HasLast: true,
+		Size:  3,
 	})
-	// head
+	// first
 	{
-		assert.Equal(t, list.DeleteByNode(a), true)
+		assert.Equal(t, list.RemoveByNode(a), true)
 		equalList(t, list, equalData{
 			Dump:    "b->c",
-			HeadValue:    "b",
-			HasHead: true,
-			TailValue:    "c",
-			HasTail: true,
-			Length:  2,
+			FirstValue:    "b",
+			HasFirst: true,
+			LastValue:    "c",
+			HasLast: true,
+			Size:  2,
 		})
-		assert.Equal(t, list.DeleteByNode(a), false)
+		assert.Equal(t, list.RemoveByNode(a), false)
 	}
-	// tail
+	// last
 	{
-		assert.Equal(t, list.DeleteByNode(c), true)
+		assert.Equal(t, list.RemoveByNode(c), true)
 		equalList(t, list, equalData{
 			Dump:    "b",
-			HeadValue:    "b",
-			HasHead: true,
-			TailValue:    "b",
-			HasTail: true,
-			Length:  1,
+			FirstValue:    "b",
+			HasFirst: true,
+			LastValue:    "b",
+			HasLast: true,
+			Size:  1,
 		})
 	}
 	// one node
 	{
-		assert.Equal(t, list.DeleteByNode(b), true)
+		assert.Equal(t, list.RemoveByNode(b), true)
 		equalList(t, list, equalData{
 			Dump:    "",
-			HeadValue:    nil,
-			HasHead: false,
-			TailValue:    nil,
-			HasTail: false,
-			Length:  0,
+			FirstValue:    nil,
+			HasFirst: false,
+			LastValue:    nil,
+			HasLast: false,
+			Size:  0,
 		})
 	}
 	// middle
 	// x->y->z
 	// delete y, list is x->z
 	{
-		_ = list.RightPush("x")
-		y := list.RightPush("y")
-		_ = list.RightPush("z")
+		_ = list.AddLast("x")
+		y := list.AddLast("y")
+		_ = list.AddLast("z")
 		equalList(t, list, equalData{
 			Dump:    "x->y->z",
-			HeadValue:    "x",
-			HasHead: true,
-			TailValue:    "z",
-			HasTail: true,
-			Length:  3,
+			FirstValue:    "x",
+			HasFirst: true,
+			LastValue:    "z",
+			HasLast: true,
+			Size:  3,
 		})
-		assert.Equal(t, list.DeleteByNode(y), true)
+		assert.Equal(t, list.RemoveByNode(y), true)
 		equalList(t, list, equalData{
 			Dump:    "x->z",
-			HeadValue:    "x",
-			HasHead: true,
-			TailValue:    "z",
-			HasTail: true,
-			Length:  2,
+			FirstValue:    "x",
+			HasFirst: true,
+			LastValue:    "z",
+			HasLast: true,
+			Size:  2,
 		})
 	}
 }
@@ -252,89 +252,89 @@ func (suite TestSingleListSuite) TestInsertBefore() {
 	t := suite.T()
 	newList := suite.NewList
 	list := newList(nil)
-	a := list.RightPush("a")
-	// head
+	a := list.AddLast("a")
+	// first
 	b := NewSingleListNode("b")
 	assert.Equal(t, list.InsertBefore(a, b), true)
 	equalList(t, list, equalData{
 		Dump:    "b->a",
-		HeadValue:    "b",
-		HasHead: true,
-		TailValue:    "a",
-		HasTail: true,
-		Length:  2,
+		FirstValue:    "b",
+		HasFirst: true,
+		LastValue:    "a",
+		HasLast: true,
+		Size:  2,
 	})
 	c := NewSingleListNode("c")
 	assert.Equal(t, list.InsertBefore(b, c), true)
 	equalList(t, list, equalData{
 		Dump:    "c->b->a",
-		HeadValue:    "c",
-		HasHead: true,
-		TailValue:    "a",
-		HasTail: true,
-		Length:  3,
+		FirstValue:    "c",
+		HasFirst: true,
+		LastValue:    "a",
+		HasLast: true,
+		Size:  3,
 	})
 	// middle
 	x := NewSingleListNode("x")
 	assert.Equal(t, list.InsertBefore(b, x), true)
 	equalList(t, list, equalData{
 		Dump:    "c->x->b->a",
-		HeadValue:    "c",
-		HasHead: true,
-		TailValue:    "a",
-		HasTail: true,
-		Length:  4,
+		FirstValue:    "c",
+		HasFirst: true,
+		LastValue:    "a",
+		HasLast: true,
+		Size:  4,
 	})
-	// tail
+	// last
 	z := NewSingleListNode("z")
 	assert.Equal(t, list.InsertBefore(a, z), true)
 	equalList(t, list, equalData{
 		Dump:    "c->x->b->z->a",
-		HeadValue:    "c",
-		HasHead: true,
-		TailValue:    "a",
-		HasTail: true,
-		Length:  5,
+		FirstValue:    "c",
+		HasFirst: true,
+		LastValue:    "a",
+		HasLast: true,
+		Size:  5,
 	})
 }
 func (suite TestSingleListSuite) TestInsertAfter() {
 	t := suite.T()
 	newList := suite.NewList
 	list := newList(nil)
-	a := list.RightPush("a")
+	a := list.AddLast("a")
 	b := NewSingleListNode("b")
-	// head
+	// first
 	assert.Equal(t, list.InsertAfter(a, b), true)
 	equalList(t, list, equalData{
 		Dump:    "a->b",
-		HeadValue:    "a",
-		HasHead: true,
-		TailValue:    "b",
-		HasTail: true,
-		Length:  2,
+		FirstValue:    "a",
+		HasFirst: true,
+		LastValue:    "b",
+		HasLast: true,
+		Size:  2,
 	})
 	assert.Equal(t, list.InsertAfter(NewSingleListNode("1"), NewSingleListNode("2")), false)
-	// tail
+	// last
 	c := NewSingleListNode("c")
 	assert.Equal(t, list.InsertAfter(b, c), true)
 	equalList(t, list, equalData{
 		Dump:    "a->b->c",
-		HeadValue:    "a",
-		HasHead: true,
-		TailValue:    "c",
-		HasTail: true,
-		Length:  3,
+		FirstValue:    "a",
+		HasFirst: true,
+		LastValue:    "c",
+		HasLast: true,
+		Size:  3,
 	})
 	// middle
 	x := NewSingleListNode("x")
 	assert.Equal(t, list.InsertAfter(b, x), true)
 	equalList(t, list, equalData{
 		Dump:    "a->b->x->c",
-		HeadValue:    "a",
-		HasHead: true,
-		TailValue:    "c",
-		HasTail: true,
-		Length:  4,
+		FirstValue:    "a",
+		HasFirst: true,
+		LastValue:    "c",
+		HasLast: true,
+		Size:  4,
 	})
 }
 func (suite TestSingleListSuite) TestFindByIndex() {
@@ -348,14 +348,14 @@ func (suite TestSingleListSuite) TestFindByIndex() {
 		assert.Equal(t,hasNode, false)
 	}
 	// one node
-	a := list.RightPush("a")
+	a := list.AddLast("a")
 	{
 		node, hasNode := list.FindByIndex(0)
 		assert.Equal(t, node, a)
 		assert.Equal(t,hasNode, true)
 	}
 	// two node
-	b := list.RightPush("b")
+	b := list.AddLast("b")
 	{
 		node, hasNode := list.FindByIndex(0)
 		assert.Equal(t, node, a)
@@ -367,7 +367,7 @@ func (suite TestSingleListSuite) TestFindByIndex() {
 		assert.Equal(t,hasNode, true)
 	}
 	// three node
-	c := list.RightPush("c")
+	c := list.AddLast("c")
 	{
 		node, hasNode := list.FindByIndex(0)
 		assert.Equal(t, node, a)
@@ -399,31 +399,31 @@ func (suite TestSingleListSuite) TestReverse() {
 	}
 	{
 		list := newList(nil)
-		list.RightPush("a")
+		list.AddLast("a")
 		list.Reverse()
 		assert.Equal(t, list.Dump(), "a")
 	}
 	{
 		list := newList(nil)
-		list.RightPush("a")
-		list.RightPush("b")
+		list.AddLast("a")
+		list.AddLast("b")
 		list.Reverse()
 		assert.Equal(t, list.Dump(), "b->a")
 	}
 	{
 		list := newList(nil)
-		list.RightPush("a")
-		list.RightPush("b")
-		list.RightPush("c")
+		list.AddLast("a")
+		list.AddLast("b")
+		list.AddLast("c")
 		list.Reverse()
 		assert.Equal(t, list.Dump(), "c->b->a")
 	}
 	{
 		list := newList(nil)
-		list.RightPush("a")
-		list.RightPush("b")
-		list.RightPush("c")
-		list.RightPush("d")
+		list.AddLast("a")
+		list.AddLast("b")
+		list.AddLast("c")
+		list.AddLast("d")
 		list.Reverse()
 		assert.Equal(t, list.Dump(), "d->c->b->a")
 	}
@@ -432,12 +432,12 @@ func (suite TestSingleListSuite) TestIsCycle() {
 	t := suite.T()
 	newList := suite.NewList
 	list := newList(nil)
-	a := list.RightPush("a");_=a
-	b := list.RightPush("b");_=b
-	c := list.RightPush("c")
-	d := list.RightPush("d");_=d
+	a := list.AddLast("a");_=a
+	b := list.AddLast("b");_=b
+	c := list.AddLast("c")
+	d := list.AddLast("d");_=d
 	assert.Equal(t, list.IsCycle(), false)
-	e := list.RightPush("e")
+	e := list.AddLast("e")
 	e.SetNext(c)
 	assert.Equal(t, list.Dump(), "a->b->c->d->e->cycle{index:2, value:c}")
 	assert.Equal(t, list.IsCycle(), true)
