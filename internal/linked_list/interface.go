@@ -25,21 +25,21 @@ func (node *SingleListNode) SetValue(v interface{})  {
 
 type SingleLister interface {
 	// 获取头节点
-	First() (first *SingleListNode, hasFirst bool)
+	Head() (head *SingleListNode, hasHead bool)
 	// 获取尾节点
-	Last() (last *SingleListNode, hasLast bool)
+	Tail() (tail *SingleListNode, hasTail bool)
 	// 获取链表长度
-	Size () int
+	Length () int
 	// 打印链表
 	Dump() string
 	// 头入
-	AddFirst(v interface{}) (newNode *SingleListNode)
+	LeftPush(v interface{}) (newNode *SingleListNode)
 	// // 尾入
-	AddLast(v interface{}) (newNode *SingleListNode)
+	RightPush(v interface{}) (newNode *SingleListNode)
 	// // 查找节点的上一个节点 很多方法都是基于 PrevNode 实现的所以需要优先实现 PrevNode
 	PrevNode(pivot *SingleListNode) (prevNode *SingleListNode, hasPrevNode bool)
 	// 根据节点删除节点
-	RemoveByNode(node *SingleListNode) (ok bool)
+	DeleteByNode(node *SingleListNode) (ok bool)
 	// 在指定节点之前插入 a->b.InsertAfter(a,z) = z->a->b
 	InsertBefore(pivot *SingleListNode, newNode *SingleListNode) (ok bool)
 	// 在指定节点之后插入 a->b.InsertAfter(a,z) = a->z->b

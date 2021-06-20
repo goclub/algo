@@ -11,15 +11,15 @@ func NewSingleListPractice(node *SingleListNode) SingleLister {
 	return SingleListPractice{}
 }
 
-func (s SingleListPractice) First() (first *SingleListNode, hasFirst bool) {
+func (s SingleListPractice) Head() (head *SingleListNode, hasHead bool) {
 	panic("implement me")
 }
 
-func (s SingleListPractice) Last() (last *SingleListNode, hasLast bool) {
+func (s SingleListPractice) Tail() (tail *SingleListNode, hasTail bool) {
 	panic("implement me")
 }
 
-func (s SingleListPractice) Size() int {
+func (s SingleListPractice) Length() int {
 	panic("implement me")
 }
 
@@ -27,11 +27,11 @@ func (s SingleListPractice) Dump() string {
 	panic("implement me")
 }
 
-func (s SingleListPractice) AddFirst(v interface{}) (newNode *SingleListNode) {
+func (s SingleListPractice) LeftPush(v interface{}) (newNode *SingleListNode) {
 	panic("implement me")
 }
 
-func (s SingleListPractice) AddLast(v interface{}) (newNode *SingleListNode) {
+func (s SingleListPractice) RightPush(v interface{}) (newNode *SingleListNode) {
 	panic("implement me")
 }
 
@@ -39,7 +39,7 @@ func (s SingleListPractice) PrevNode(pivot *SingleListNode) (prevNode *SingleLis
 	panic("implement me")
 }
 
-func (s SingleListPractice) RemoveByNode(node *SingleListNode) (ok bool) {
+func (s SingleListPractice) DeleteByNode(node *SingleListNode) (ok bool) {
 	panic("implement me")
 }
 

@@ -6,25 +6,25 @@ import (
 )
 // 最容易实现的单链表
 type SingleListEasy struct {
-	first *SingleListNode
+	head *SingleListNode
 }
-func NewSingleListEasy(first *SingleListNode) *SingleListEasy {
+func NewSingleListEasy(head *SingleListNode) *SingleListEasy {
 	return &SingleListEasy{
-		first: first,
+		head: head,
 	}
 }
 
-func (list *SingleListEasy) First() (first *SingleListNode, hasFirst bool) {
-	if list.first == nil {
+func (list *SingleListEasy) Head() (head *SingleListNode, hasHead bool) {
+	if list.head == nil {
 		return nil, false
 	}
-	return list.first, true
+	return list.head, true
 }
-func (list *SingleListEasy) Last() (last *SingleListNode, hasLast bool) {
-	if list.first == nil {
+func (list *SingleListEasy) Tail() (tail *SingleListNode, hasTail bool) {
+	if list.head == nil {
 		return nil, false
 	}
-	node := list.first
+	node := list.head
 	for {
 		if node.next == nil {
 			return node, true
@@ -32,11 +32,11 @@ func (list *SingleListEasy) Last() (last *SingleListNode, hasLast bool) {
 		node = node.next
 	}
 }
-func (list *SingleListEasy) Size() (length int) {
-	if list.first == nil {
+func (list *SingleListEasy) Length() (length int) {
+	if list.head == nil {
 		return 0
 	}
-	node := list.first
+	node := list.head
 	for {
 		length++
 		if node.next == nil{
@@ -46,10 +46,10 @@ func (list *SingleListEasy) Size() (length int) {
 	}
 }
 func (list *SingleListEasy) Dump() (s string) {
-	if list.first == nil {
+	if list.head == nil {
 		return ""
 	}
-	curr := list.first
+	curr := list.head
 	seen := map[*SingleListNode]int{}
 	i := 0
 	for {
@@ -67,24 +67,24 @@ func (list *SingleListEasy) Dump() (s string) {
 		curr = curr.next
 	}
 }
-func (list *SingleListEasy) AddFirst(v interface{}) (newNode *SingleListNode) {
+func (list *SingleListEasy) LeftPush(v interface{}) (newNode *SingleListNode) {
 	newNode = NewSingleListNode(v)
-	if list.first == nil {
-		list.first = newNode
+	if list.head == nil {
+		list.head = newNode
 		return
 	}
-	newNode.next = list.first
-	list.first = newNode
+	newNode.next = list.head
+	list.head = newNode
 	return
 }
 
-func (list *SingleListEasy) AddLast(v interface{}) (newNode *SingleListNode) {
+func (list *SingleListEasy) RightPush(v interface{}) (newNode *SingleListNode) {
 	newNode = NewSingleListNode(v)
-	if list.first == nil {
-		list.first = newNode
+	if list.head == nil {
+		list.head = newNode
 		return
 	}
-	node := list.first
+	node := list.head
 	for {
 		if node.next == nil {
 			node.next = newNode
@@ -94,10 +94,10 @@ func (list *SingleListEasy) AddLast(v interface{}) (newNode *SingleListNode) {
 	}
 }
 func (list *SingleListEasy) PrevNode(pivot *SingleListNode) (prevNode *SingleListNode, hasPrevNode bool) {
-	if list.first == nil {
+	if list.head == nil {
 		return nil, false
 	}
-	node := list.first
+	node := list.head
 	for {
 		if node.next == pivot {
 			return node, true
@@ -109,16 +109,16 @@ func (list *SingleListEasy) PrevNode(pivot *SingleListNode) (prevNode *SingleLis
 	}
 }
 
-func (list *SingleListEasy) RemoveByNode(removeNode *SingleListNode) (ok bool) {
-	if list.first == nil {
+func (list *SingleListEasy) DeleteByNode(removeNode *SingleListNode) (ok bool) {
+	if list.head == nil {
 		return false
 	}
-	if list.first == removeNode {
-		list.first = list.first.next
+	if list.head == removeNode {
+		list.head = list.head.next
 		removeNode.next = nil
 		return true
 	}
-	node := list.first
+	node := list.head
 
 	for {
 		if node.next == removeNode {
@@ -133,15 +133,15 @@ func (list *SingleListEasy) RemoveByNode(removeNode *SingleListNode) (ok bool) {
 	}
 }
 func (list *SingleListEasy) InsertBefore(pivot *SingleListNode, newNode *SingleListNode) (ok bool) {
-	if list.first == nil {
+	if list.head == nil {
 		return false
 	}
-	if list.first == pivot {
-		newNode.next = list.first
-		list.first = newNode
+	if list.head == pivot {
+		newNode.next = list.head
+		list.head = newNode
 		return true
 	}
-	node := list.first
+	node := list.head
 	for {
 		if node.next == nil {
 			return false
@@ -155,10 +155,10 @@ func (list *SingleListEasy) InsertBefore(pivot *SingleListNode, newNode *SingleL
 	}
 }
 func (list *SingleListEasy) InsertAfter(pivot *SingleListNode, newNode *SingleListNode) (ok bool) {
-	if list.first == nil {
+	if list.head == nil {
 		return false
 	}
-	node := list.first
+	node := list.head
 	for {
 		if node == pivot {
 			newNode.next = node.next
@@ -172,10 +172,10 @@ func (list *SingleListEasy) InsertAfter(pivot *SingleListNode, newNode *SingleLi
 	}
 }
 func (list *SingleListEasy) FindByIndex(index int) (target *SingleListNode, hasNode bool) {
-	if list.first == nil {
+	if list.head == nil {
 		return nil, false
 	}
-	node := list.first
+	node := list.head
 	for count := 0; ;count++ {
 		if count == index {
 			return node, true
@@ -188,20 +188,20 @@ func (list *SingleListEasy) FindByIndex(index int) (target *SingleListNode, hasN
 }
 func (list *SingleListEasy) Reverse() {
 	// empty
-	if list.first == nil {
+	if list.head == nil {
 		return
 	}
 	// one node 
-	if list.first.next == nil {
+	if list.head.next == nil {
 		return
 	}
 	var prev *SingleListNode
-	curr := list.first
+	curr := list.head
 	for {
 		next := curr.next
 		curr.next = prev
 		if next == nil {
-			list.first = curr
+			list.head = curr
 			return
 		}
 		prev = curr
@@ -210,13 +210,13 @@ func (list *SingleListEasy) Reverse() {
 }
 
 func (list *SingleListEasy) IsCycle() bool {
-	if list.first == nil {
+	if list.head == nil {
 		return false
 	}
-	if list.first.next == nil {
+	if list.head.next == nil {
 		return false
 	}
-	slow , fast := list.first, list.first.next
+	slow , fast := list.head, list.head.next
 	for {
 		if fast == slow {
 			return true
